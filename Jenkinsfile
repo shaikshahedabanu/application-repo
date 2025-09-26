@@ -16,5 +16,20 @@ pipeline {
                 sh 'mvn clean deploy -Dmaven.test.skip=true'
             }
         }
+        stage('maventest') {
+            steps {
+                sh 'mvn surefire-report:report'
+            }
+        }
+        stage('sonartest') {
+        environment {
+            scannerHome = tool 'sonar-scanner'
+        }
+            steps {
+            withSonarQubeENV('sonar-server')
+                sh '${scannerHome}/bin/sonar-scanner'
+
+            }
+        }
   }
 }
